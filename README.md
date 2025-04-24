@@ -8,8 +8,9 @@ This platform deals with the matching of Consultant profiles with the required p
 
 
 # Skill Bridge
+![skillbridge](https://github.com/user-attachments/assets/1f8b9208-b72f-4ca7-b073-24be457cb818)
 
-![Skill Bridge Logo](src/assets/logo.png)
+
 
 ## Introduction
 
@@ -159,9 +160,6 @@ docker run -p 8080:80 skill-bridge
 
 We welcome contributions to Skill Bridge! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit pull requests, report issues, and suggest improvements.
 
-## License
-
-Skill Bridge is released under the [MIT License](LICENSE).
 
 ## Support
 
