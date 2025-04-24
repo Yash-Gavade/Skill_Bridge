@@ -1,0 +1,10 @@
+pip install --upgrade byaldi
+pip install flash-attn
+apt-get install -y poppler-utils
+pip install smolagents
+pip install langchain chromadb smolagents
+pip install langchain-openai
+pip install -qU langchain-text-splitters
+pip install langchain-community
+pip install pypdf
+pip install smolagents[litellm]
