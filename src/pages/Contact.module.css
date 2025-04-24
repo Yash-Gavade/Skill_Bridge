@@ -1,0 +1,92 @@
+/* Contact Section */
+.contactSection {
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+}
+
+.contactText {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.contactText h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #3f2a79;
+  margin-bottom: 1rem;
+}
+
+.contactText p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.contactForm form {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: space-between;
+  margin: 0 auto;
+}
+
+.inputBlock {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputBlock label {
+  font-weight: 600;
+  color: #000;
+}
+
+.inputBlock input,
+.inputBlock textarea {
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(32, 32, 32, 0.6);
+  font-size: 1rem;
+}
+
+.fullWidth {
+  flex: 1 0 100%;
+}
+
+.buttonWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.ctaButton {
+  background-color: #8a3ffc;
+  color: white;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ctaButton:hover {
+  background-color: #6f2dc8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contactForm form {
+    flex-direction: column;
+  }
+
+  .ctaButton {
+    width: 100%;
+  }
+} 

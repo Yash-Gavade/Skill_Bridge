@@ -1,34 +1,31 @@
-
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { 
-  Avatar, 
-  AvatarFallback 
+import { ConsultantMessage } from "@/components/consultants/ConsultantMessage";
+import {
+    Avatar,
+    AvatarFallback
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  Card, 
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription 
-} from "@/components/ui/card";
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
-import { 
-  FileText, 
-  Star, 
-  Calendar as CalendarIcon, 
-  User, 
-  Settings, 
-  Loader 
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger
+} from "@/components/ui/tabs";
+import {
+    Loader,
+    Star,
+    User
 } from "lucide-react";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 // Mock data for consultant profiles
 const consultants = {
@@ -198,33 +195,50 @@ export default function ConsultantProfile() {
       {/* Consultant Header */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex items-start md:items-center flex-col md:flex-row gap-6 md:gap-8">
-          <Avatar className="w-20 h-20 md:w-24 md:h-24 text-2xl">
-            <AvatarFallback className="bg-primary-50 text-primary-700">
+          <Avatar className="h-20 w-20 rounded-lg border shadow-sm">
+            <AvatarFallback className="bg-primary-50 text-primary-700 text-2xl">
               {initials}
             </AvatarFallback>
           </Avatar>
           
           <div className="flex-1">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-bold">{consultant.name}</h1>
-                <div className="flex flex-wrap items-center gap-2 mt-1">
-                  <span className="text-gray-500">{consultant.role}</span>
-                  <Badge className={statusColors[consultant.status]}>
-                    {statusLabels[consultant.status]}
-                  </Badge>
-                  <span className="text-gray-500 text-sm">{consultant.location}</span>
-                </div>
-              </div>
-              <Button variant="outline">Edit Profile</Button>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
+              <h1 className="text-2xl font-bold">{consultant.name}</h1>
+              <Badge 
+                className={`${statusColors[consultant.status]} w-fit`}
+              >
+                {statusLabels[consultant.status]}
+              </Badge>
             </div>
             
-            <div className="flex flex-wrap gap-1 mt-3">
+            <p className="text-gray-500 mb-1">{consultant.role}</p>
+            <p className="text-gray-500 mb-3 flex items-center gap-1">
+              <span className="inline-block h-4 w-4 text-gray-400">
+                <User size={16} />
+              </span>
+              {consultant.location}
+            </p>
+            
+            <div className="flex flex-wrap gap-1 mb-4">
               {consultant.skills.map((skill) => (
                 <Badge key={skill} variant="outline" className="bg-gray-50">
                   {skill}
                 </Badge>
               ))}
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+              <Button>Assign to Project</Button>
+              <ConsultantMessage 
+                consultantId={consultant.id}
+                consultantName={consultant.name}
+                consultantInitials={initials}
+                currentUserId="admin"
+                currentUserName="Admin User"
+              />
+              {consultant.status === 'available' && (
+                <Button variant="outline">Schedule Interview</Button>
+              )}
             </div>
           </div>
         </div>
@@ -285,251 +299,204 @@ export default function ConsultantProfile() {
         </CardContent>
       </Card>
       
-      {/* Tabbed Content */}
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="w-full md:w-auto">
-          <TabsTrigger value="overview" className="gap-2">
-            <User className="h-4 w-4" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="calendar" className="gap-2">
-            <CalendarIcon className="h-4 w-4" />
-            Calendar
-          </TabsTrigger>
-          <TabsTrigger value="preferences" className="gap-2">
-            <Settings className="h-4 w-4" />
-            Preferences & Notes
-          </TabsTrigger>
+      {/* Content Tabs */}
+      <Tabs defaultValue="profile" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="projects">Past Projects</TabsTrigger>
+          <TabsTrigger value="availability">Availability</TabsTrigger>
+          <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
         
-        {/* Overview Tab */}
-        <TabsContent value="overview" className="pt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              {/* Current Project */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Current Project</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {consultant.currentProject ? (
-                    <div className="bg-white">
-                      <h3 className="font-semibold">{consultant.currentProject.name}</h3>
-                      <div className="grid grid-cols-2 gap-4 mt-2">
-                        <div>
-                          <p className="text-sm text-gray-500">Role</p>
-                          <p>{consultant.currentProject.role}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Client</p>
-                          <p>{consultant.currentProject.client}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Duration</p>
-                          <p>{consultant.currentProject.duration}</p>
-                        </div>
-                      </div>
-                      <div className="mt-4">
-                        <Button size="sm">View Project</Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-gray-50 p-6 text-center rounded-md">
-                      <p className="text-gray-500">Not currently assigned to any projects</p>
-                      <Button size="sm" variant="outline" className="mt-2">
-                        Assign to Project
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+        <TabsContent value="profile" className="space-y-6">
+          {/* AI Summary */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-lg">Profile Summary</CardTitle>
+                {!aiSummary && !isGeneratingAI && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleGenerateAISummary}
+                  >
+                    <span>Generate AI Summary</span>
+                  </Button>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isGeneratingAI ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader className="h-6 w-6 animate-spin text-primary mr-2" />
+                  <span>Generating AI Summary...</span>
+                </div>
+              ) : aiSummary ? (
+                <p className="text-sm text-gray-600">{aiSummary}</p>
+              ) : (
+                <div className="text-center py-6 text-gray-500">
+                  <p>
+                    Generate an AI summary to get a comprehensive overview of this consultant.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Contact Information */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Contact Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">Email</h3>
+                  <p>{consultant.email}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">Phone</h3>
+                  <p>{consultant.phone}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">Location</h3>
+                  <p>{consultant.location}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">Current Project</h3>
+                  <p>{consultant.currentProject || "Not assigned"}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Preferences */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Preferences</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Preferred Project Types</h3>
+                <div className="flex flex-wrap gap-1">
+                  {consultant.preferences.projectTypes.map((type) => (
+                    <Badge key={type} variant="outline" className="bg-gray-50">
+                      {type}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
               
-              {/* Past Projects */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Past Projects</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {consultant.pastProjects.length === 0 ? (
-                    <div className="bg-gray-50 p-6 text-center rounded-md">
-                      <p className="text-gray-500">No past projects available</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {consultant.pastProjects.map((project) => (
-                        <div 
-                          key={project.id} 
-                          className="border rounded-md hover:bg-gray-50 transition-colors"
-                        >
-                          <div className="p-4">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <h4 className="font-medium">{project.name}</h4>
-                                <p className="text-sm text-gray-500">{project.client}</p>
-                              </div>
-                              <div className="flex items-center">
-                                <div className="flex items-center gap-1">
-                                  {[...Array(Math.floor(project.feedback))].map((_, i) => (
-                                    <Star 
-                                      key={i} 
-                                      className="h-4 w-4 text-yellow-400 fill-yellow-400" 
-                                    />
-                                  ))}
-                                  {project.feedback % 1 > 0 && (
-                                    <Star 
-                                      className="h-4 w-4 text-yellow-400" 
-                                    />
-                                  )}
-                                </div>
-                                <span className="text-sm text-gray-500 ml-1">
-                                  {project.feedback.toFixed(1)}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex items-center justify-between mt-2">
-                              <div>
-                                <p className="text-sm">{project.role}</p>
-                                <p className="text-xs text-gray-500">{project.duration}</p>
-                              </div>
-                              <div className="flex flex-wrap gap-1">
-                                {project.tags.map((tag) => (
-                                  <Badge 
-                                    key={tag} 
-                                    variant="outline" 
-                                    className="bg-gray-50 text-xs"
-                                  >
-                                    {tag}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="bg-gray-50 p-3 border-t hidden">
-                            <p className="text-sm">Project details and contributions will appear here</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-            
-            {/* Contact Information */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Contact Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium">{consultant.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Phone</p>
-                      <p className="font-medium">{consultant.phone}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Location</p>
-                      <p className="font-medium">{consultant.location}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Preferred Industries</h3>
+                <div className="flex flex-wrap gap-1">
+                  {consultant.preferences.industries.map((industry) => (
+                    <Badge key={industry} variant="outline" className="bg-gray-50">
+                      {industry}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
               
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Skills & Expertise</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {consultant.skills.map((skill) => (
-                      <Badge key={skill} className="bg-primary-50 text-primary-700 hover:bg-primary-100">
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Preferred Roles</h3>
+                <div className="flex flex-wrap gap-1">
+                  {consultant.preferences.roles.map((role) => (
+                    <Badge key={role} variant="outline" className="bg-gray-50">
+                      {role}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Work Location Preference</h3>
+                <Badge variant="outline" className="bg-gray-50">
+                  {consultant.preferences.location}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="projects">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {consultant.pastProjects.map((project) => (
+                <Card key={project.id}>
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-between">
+                      <div>
+                        <CardTitle className="text-lg">{project.name}</CardTitle>
+                        <CardDescription>{project.client}</CardDescription>
+                      </div>
+                      <div className="flex items-center gap-1 text-amber-500">
+                        <Star className="fill-current h-4 w-4" />
+                        <span className="font-medium">{project.feedback}</span>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 mb-1">Role</h3>
+                      <p>{project.role}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 mb-1">Duration</h3>
+                      <p>{project.duration}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 mb-1">Performance</h3>
+                      <div className="flex flex-wrap gap-1">
+                        {project.tags.map((tag) => (
+                          <Badge key={tag} className="bg-green-100 text-green-800">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </TabsContent>
         
-        {/* Calendar Tab */}
-        <TabsContent value="calendar" className="pt-6">
+        <TabsContent value="availability">
           <Card>
-            <CardHeader>
-              <CardTitle>Availability Calendar</CardTitle>
-              <CardDescription>
-                View consultant's availability and blockers
-              </CardDescription>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Availability Calendar</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="md:w-1/2">
+                <div className="flex-1">
                   <Calendar
                     mode="single"
                     selected={date}
                     onSelect={setDate}
                     className="rounded-md border"
-                    modifiers={{
-                      booked: consultant.availability.blockers.map(b => b.date)
-                    }}
-                    modifiersStyles={{
-                      booked: {
-                        backgroundColor: "#fee2e2",
-                        color: "#b91c1c"
-                      }
+                    disabled={(date) => {
+                      return consultant.availability.blockers.some(
+                        (blocker) => blocker.date.toDateString() === date.toDateString()
+                      );
                     }}
                   />
                 </div>
-                <div className="md:w-1/2">
-                  <div className="bg-gray-50 p-4 rounded-md h-full">
-                    <h3 className="font-medium mb-4">Upcoming Blockers</h3>
-                    
-                    {consultant.availability.blockers.length > 0 ? (
-                      <div className="space-y-3">
-                        {consultant.availability.blockers
-                          .sort((a, b) => a.date.getTime() - b.date.getTime())
-                          .map((blocker, idx) => (
-                          <div key={idx} className="flex items-center gap-3 p-2 bg-white rounded border">
-                            <div 
-                              className={`w-3 h-3 rounded-full ${
-                                blocker.type === 'vacation' ? 'bg-blue-500' : 'bg-amber-500'
-                              }`}
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-medium">{blocker.label}</p>
-                              <p className="text-xs text-gray-500">
-                                {blocker.date.toLocaleDateString('en-US', { 
-                                  weekday: 'short',
-                                  month: 'short', 
-                                  day: 'numeric' 
-                                })}
-                              </p>
-                            </div>
-                            <Badge 
-                              variant="outline" 
-                              className={
-                                blocker.type === 'vacation' 
-                                  ? 'bg-blue-50 text-blue-800' 
-                                  : 'bg-amber-50 text-amber-800'
-                              }
-                            >
-                              {blocker.type === 'vacation' ? 'Vacation' : 'Personal'}
-                            </Badge>
-                          </div>
-                        ))}
+                <div className="w-full md:w-60 space-y-4">
+                  <h3 className="font-medium">Upcoming Unavailability</h3>
+                  <div className="space-y-2">
+                    {consultant.availability.blockers.map((blocker, index) => (
+                      <div key={index} className="p-2 rounded-md border">
+                        <p className="text-sm font-medium">{blocker.label}</p>
+                        <p className="text-xs text-gray-500">
+                          {blocker.date.toLocaleDateString('en-US', {
+                            weekday: 'short',
+                            month: 'short', 
+                            day: 'numeric'
+                          })}
+                        </p>
                       </div>
-                    ) : (
-                      <p className="text-gray-500 text-center">No upcoming blockers</p>
-                    )}
-                    
-                    <div className="flex justify-center mt-4">
-                      <Button size="sm">Add Blocker</Button>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -537,87 +504,34 @@ export default function ConsultantProfile() {
           </Card>
         </TabsContent>
         
-        {/* Preferences Tab */}
-        <TabsContent value="preferences" className="pt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Preferences */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Consultant Preferences</CardTitle>
-                <CardDescription>
-                  Personal preferences for project assignments
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500">Preferred Project Types</h3>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {consultant.preferences.projectTypes.map((type) => (
-                        <Badge key={type} variant="outline">{type}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500">Preferred Location</h3>
-                    <p className="mt-1">{consultant.preferences.location}</p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500">Preferred Industries</h3>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {consultant.preferences.industries.map((industry) => (
-                        <Badge key={industry} variant="outline">{industry}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500">Preferred Roles</h3>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {consultant.preferences.roles.map((role) => (
-                        <Badge key={role} variant="outline">{role}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Notes */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Internal Notes</CardTitle>
-                <CardDescription>
-                  Notes only visible to management
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {consultant.notes.length > 0 ? (
-                  <div className="space-y-4">
-                    {consultant.notes.map((note) => (
-                      <div key={note.id} className="bg-gray-50 p-4 rounded-md">
-                        <div className="flex justify-between items-center mb-2">
-                          <p className="font-medium">{note.author}</p>
-                          <p className="text-xs text-gray-500">{new Date(note.date).toLocaleDateString()}</p>
-                        </div>
-                        <p className="text-sm">{note.content}</p>
-                      </div>
-                    ))}
-                  </div>
+        <TabsContent value="notes">
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-lg">Notes & Observations</CardTitle>
+                <Button variant="outline" size="sm">Add Note</Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {consultant.notes.length === 0 ? (
+                  <p className="text-center py-6 text-gray-500">
+                    No notes added yet.
+                  </p>
                 ) : (
-                  <div className="text-center p-6 text-gray-500">
-                    <p>No notes have been added yet</p>
-                  </div>
+                  consultant.notes.map((note) => (
+                    <div key={note.id} className="p-4 rounded-md border">
+                      <p className="text-sm mb-2">{note.content}</p>
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span>By {note.author}</span>
+                        <span>{new Date(note.date).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  ))
                 )}
-                
-                <div className="mt-4">
-                  <Button size="sm" className="w-full">Add Note</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

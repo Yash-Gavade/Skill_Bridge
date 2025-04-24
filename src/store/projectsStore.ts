@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -141,10 +140,27 @@ export interface Project {
   consultantRoles?: ConsultantRole[];
 }
 
+// Add to the type imports
+export type MessageType = "meeting_invitation" | "assignment" | "project_update" | "general";
+
+// Add the Message interface
+export interface Message {
+  id: string;
+  projectId: string;
+  projectName: string;
+  content: string;
+  timestamp: string;
+  type: MessageType;
+  read: boolean;
+  consultantId?: string;
+  consultantName?: string;
+}
+
 // ProjectsState interface for the store
 export interface ProjectsState {
   projects: Record<string, Project>;
   consultants: Record<string, Consultant>;
+  messages: Message[];
   updateProject: (projectId: string, projectData: Partial<Project>) => void;
   updateConsultant: (consultantId: string, consultantData: Partial<Consultant>) => void;
   addConsultants: (consultants: Consultant[]) => void;
@@ -152,6 +168,13 @@ export interface ProjectsState {
   assignConsultantsToProject: (projectId: string, consultantIds: string[]) => void;
   advanceProjectPhase: (projectId: string, newPhase: ProjectPhase, executionPhase?: ExecutionPhase) => void;
   toggleConsultantSelection: (projectId: string, consultantId: string) => void;
+  addProjectNote: (projectId: string, content: string) => void;
+  sendMeetingInvitations: (projectId: string, consultantIds: string[]) => void;
+  markMessageAsRead: (messageId: string) => void;
+  markAllMessagesAsRead: () => void;
+  deleteMessage: (messageId: string) => void;
+  acceptMeetingInvitation: (messageId: string) => void;
+  declineMeetingInvitation: (messageId: string) => void;
 }
 
 // Remove duplicate interface by using the exported one
@@ -168,11 +191,37 @@ const initialConsultants: Record<string, Consultant> = {
   
 };
 
+const initialMessages: Message[] = [
+  {
+    id: "msg1",
+    projectId: "p1",
+    projectName: "Healthcare Portal Redesign",
+    content: "Scheduled an internal interview for the Healthcare Portal Redesign project. Please prepare for a technical discussion.",
+    timestamp: "2023-05-10T09:00:00.000Z",
+    type: "meeting_invitation",
+    read: false,
+    consultantId: "c1",
+    consultantName: "Alex Thompson"
+  },
+  {
+    id: "msg2",
+    projectId: "p2",
+    projectName: "E-commerce Platform Migration",
+    content: "You've been assigned to the E-commerce Platform Migration project. Check your dashboard for details.",
+    timestamp: "2023-05-09T14:30:00.000Z",
+    type: "assignment",
+    read: true,
+    consultantId: "c2",
+    consultantName: "Sarah Chen"
+  }
+];
+
 export const useProjectsStore = create<ProjectsState>()(
   devtools(
     (set) => ({
       projects: initialProjects,
       consultants: initialConsultants,
+      messages: initialMessages,
 
       updateProject: (projectId, projectData) => 
         set((state) => ({
@@ -443,7 +492,158 @@ export const useProjectsStore = create<ProjectsState>()(
               }
             }
           };
-        })
+        }),
+
+      addProjectNote: (projectId, content) =>
+        set((state) => ({
+          projects: {
+            ...state.projects,
+            [projectId]: {
+              ...state.projects[projectId],
+              notes: [...(state.projects[projectId].notes || []), content]
+            }
+          }
+        })),
+
+      sendMeetingInvitations: (projectId, consultantIds) =>
+        set((state) => {
+          const project = state.projects[projectId];
+          if (!project) return state;
+          
+          const updatedConsultants = project.matchedConsultants.map(consultant => {
+            if (consultantIds.includes(consultant.id)) {
+              return {
+                ...consultant,
+                interviewStatus: "scheduled" as InterviewStatus
+              };
+            }
+            return consultant;
+          });
+          
+          const updatedProject = {
+            ...project,
+            matchedConsultants: updatedConsultants
+          };
+          
+          return {
+            ...state,
+            projects: {
+              ...state.projects,
+              [projectId]: updatedProject
+            }
+          };
+        }),
+
+      markMessageAsRead: (messageId) =>
+        set((state) => ({
+          messages: state.messages.map(message =>
+            message.id === messageId ? { ...message, read: true } : message
+          )
+        })),
+
+      markAllMessagesAsRead: () =>
+        set((state) => ({
+          messages: state.messages.map(message => ({ ...message, read: true }))
+        })),
+
+      deleteMessage: (messageId) =>
+        set((state) => ({
+          messages: state.messages.filter(message => message.id !== messageId)
+        })),
+
+      acceptMeetingInvitation: (messageId: string) =>
+        set((state) => {
+          const message = state.messages.find(m => m.id === messageId);
+          if (!message || message.type !== "meeting_invitation") return state;
+          
+          const project = state.projects[message.projectId];
+          if (!project) return state;
+          
+          const updatedConsultants = { ...state.consultants };
+          if (message.consultantId && updatedConsultants[message.consultantId]) {
+            updatedConsultants[message.consultantId] = {
+              ...updatedConsultants[message.consultantId],
+              status: "interviewing",
+              interviewStatus: "scheduled"
+            };
+          }
+          
+          // Add a notification to the project about the acceptance
+          const updatedProject = {
+            ...project,
+            projectNotifications: [
+              {
+                id: `notification-${Date.now()}`,
+                content: `${message.consultantName} has accepted the meeting invitation`,
+                timestamp: new Date().toISOString(),
+                type: "milestone" as NotificationType
+              },
+              ...project.projectNotifications
+            ]
+          };
+          
+          // Mark the message as read
+          const updatedMessages = state.messages.map(m => 
+            m.id === messageId ? { ...m, read: true } : m
+          );
+          
+          return {
+            ...state,
+            projects: {
+              ...state.projects,
+              [message.projectId]: updatedProject
+            },
+            consultants: updatedConsultants,
+            messages: updatedMessages
+          };
+        }),
+
+      declineMeetingInvitation: (messageId: string) =>
+        set((state) => {
+          const message = state.messages.find(m => m.id === messageId);
+          if (!message || message.type !== "meeting_invitation") return state;
+          
+          const project = state.projects[message.projectId];
+          if (!project) return state;
+          
+          const updatedConsultants = { ...state.consultants };
+          if (message.consultantId && updatedConsultants[message.consultantId]) {
+            updatedConsultants[message.consultantId] = {
+              ...updatedConsultants[message.consultantId],
+              status: "available",
+              interviewStatus: "pending"
+            };
+          }
+          
+          // Add a notification to the project about the declination
+          const updatedProject = {
+            ...project,
+            projectNotifications: [
+              {
+                id: `notification-${Date.now()}`,
+                content: `${message.consultantName} has declined the meeting invitation`,
+                timestamp: new Date().toISOString(),
+                type: "alert" as NotificationType
+              },
+              ...project.projectNotifications
+            ]
+          };
+          
+          // Mark the message as read
+          const updatedMessages = state.messages.map(m => 
+            m.id === messageId ? { ...m, read: true } : m
+          );
+          
+          return {
+            ...state,
+            projects: {
+              ...state.projects,
+              [message.projectId]: updatedProject
+            },
+            consultants: updatedConsultants,
+            messages: updatedMessages
+          };
+        }),
     }),
     {
       name: "projects-store"

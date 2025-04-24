@@ -1,0 +1,123 @@
+.authContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f5f5f5;
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.authHeader h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.authHeader p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.authForm {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.authForm input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.authForm input:focus {
+  outline: none;
+  border-color: #6e33f5;
+  box-shadow: 0 0 0 2px rgba(110, 51, 245, 0.2);
+}
+
+.submitButton {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(to right, #6e33f5, #aa44ff);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submitButton:hover {
+  background: linear-gradient(to right, #5b29d4, #8f39da);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.errorMessage {
+  background-color: #fde8e8;
+  color: #e53e3e;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.toggleLink {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #666;
+}
+
+.linkText {
+  color: #6e33f5;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.linkText:hover {
+  color: #aa44ff;
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .authForm {
+    padding: 1.5rem;
+  }
+  
+  .authHeader h1 {
+    font-size: 2rem;
+  }
+} 

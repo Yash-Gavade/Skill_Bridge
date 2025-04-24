@@ -1,16 +1,24 @@
-
-import { Project, Consultant } from "../types/project-interfaces";
-import { ProjectPhase, ExecutionPhase, ConsultantStatus, InterviewStatus, NotificationType } from "../types/project-types";
+import { Message } from "../projectsStore";
+import { Consultant, Project } from "../types/project-interfaces";
+import { ConsultantStatus, ExecutionPhase, InterviewStatus, MessageType, NotificationType, ProjectPhase } from "../types/project-types";
 
 export interface ProjectsState {
   projects: Record<string, Project>;
   consultants: Record<string, Consultant>;
+  messages: Message[];
   updateProject: (projectId: string, projectData: Partial<Project>) => void;
   updateConsultant: (consultantId: string, consultantData: Partial<Consultant>) => void;
   addProject: (project: Project) => void;
   assignConsultantsToProject: (projectId: string, consultantIds: string[]) => void;
   advanceProjectPhase: (projectId: string, newPhase: ProjectPhase, executionPhase?: ExecutionPhase) => void;
   toggleConsultantSelection: (projectId: string, consultantId: string) => void;
+  addProjectNote: (projectId: string, content: string) => void;
+  sendMeetingInvitations: (projectId: string, consultantIds: string[]) => void;
+  markMessageAsRead: (messageId: string) => void;
+  markAllMessagesAsRead: () => void;
+  deleteMessage: (messageId: string) => void;
+  acceptMeetingInvitation: (messageId: string) => void;
+  declineMeetingInvitation: (messageId: string) => void;
 }
 
 export const createProjectActions = (set: Function) => ({
@@ -263,6 +271,235 @@ export const createProjectActions = (set: Function) => ({
             matchedConsultants: updatedConsultants
           }
         }
+      };
+    }),
+
+  addProjectNote: (projectId: string, content: string) =>
+    set((state: ProjectsState) => {
+      const project = state.projects[projectId];
+      
+      if (!project) return state;
+      
+      const timestamp = new Date().toISOString();
+      
+      // Create a note that works with the current implementation
+      const newNote = {
+        id: `note-${Date.now()}`,
+        title: "Team Note",
+        createdAt: timestamp,
+        createdBy: "Project Manager", // This would be the current user in a real app
+        author: "Project Manager", // For compatibility with the UI
+        date: new Date().toLocaleDateString(), // For compatibility with the UI
+        content: content, // For compatibility with the UI
+        messages: [
+          {
+            id: `msg-${Date.now()}`,
+            content: content,
+            timestamp: timestamp,
+            author: "Project Manager"
+          }
+        ]
+      };
+      
+      const updatedProject = {
+        ...project,
+        feedbackThreads: [
+          newNote,
+          ...(project.feedbackThreads || [])
+        ],
+        projectNotifications: [
+          {
+            id: `notification-${Date.now()}`,
+            content: "New team note added",
+            timestamp: timestamp,
+            type: "update"
+          },
+          ...project.projectNotifications
+        ]
+      };
+      
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          [projectId]: updatedProject
+        }
+      };
+    }),
+
+  sendMeetingInvitations: (projectId: string, consultantIds: string[]) =>
+    set((state: ProjectsState) => {
+      const project = state.projects[projectId];
+      
+      if (!project) return state;
+      
+      // Update consultant status
+      const updatedConsultants = { ...state.consultants };
+      const newMessages: Message[] = [];
+      
+      consultantIds.forEach(id => {
+        const consultant = updatedConsultants[id];
+        
+        if (consultant) {
+          // Update interview status
+          updatedConsultants[id] = {
+            ...consultant,
+            status: "interviewing" as ConsultantStatus,
+            interviewStatus: "scheduled" as InterviewStatus,
+            interviewDate: new Date(Date.now() + 86400000).toISOString().split('T')[0] // Tomorrow
+          };
+          
+          // Create invitation message
+          newMessages.push({
+            id: `msg-${Date.now()}-${id}`,
+            projectId,
+            projectName: project.name,
+            content: `Interview invitation for "${project.name}" project. Please confirm your availability.`,
+            timestamp: new Date().toISOString(),
+            type: "meeting_invitation" as MessageType,
+            read: false,
+            consultantId: id,
+            consultantName: consultant.name
+          });
+        }
+      });
+      
+      // Update project with notifications
+      const updatedProject = {
+        ...project,
+        projectNotifications: [
+          {
+            id: `notification-${Date.now()}`,
+            content: `Interview invitations sent to ${consultantIds.length} consultants: ${consultantIds.map(id => updatedConsultants[id]?.name).join(", ")}`,
+            timestamp: new Date().toISOString(),
+            type: "milestone" as NotificationType
+          },
+          ...project.projectNotifications
+        ]
+      };
+      
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          [projectId]: updatedProject
+        },
+        consultants: updatedConsultants,
+        messages: [...newMessages, ...state.messages]
+      };
+    }),
+    
+  markMessageAsRead: (messageId: string) =>
+    set((state: ProjectsState) => ({
+      ...state,
+      messages: state.messages.map(message =>
+        message.id === messageId ? { ...message, read: true } : message
+      )
+    })),
+    
+  markAllMessagesAsRead: () =>
+    set((state: ProjectsState) => ({
+      ...state,
+      messages: state.messages.map(message => ({ ...message, read: true }))
+    })),
+    
+  deleteMessage: (messageId: string) =>
+    set((state: ProjectsState) => ({
+      ...state,
+      messages: state.messages.filter(message => message.id !== messageId)
+    })),
+
+  acceptMeetingInvitation: (messageId: string) =>
+    set((state: ProjectsState) => {
+      const message = state.messages.find(m => m.id === messageId);
+      if (!message || message.type !== "meeting_invitation") return state;
+      
+      const project = state.projects[message.projectId];
+      if (!project) return state;
+      
+      const updatedConsultants = { ...state.consultants };
+      if (message.consultantId && updatedConsultants[message.consultantId]) {
+        updatedConsultants[message.consultantId] = {
+          ...updatedConsultants[message.consultantId],
+          status: "interviewing",
+          interviewStatus: "scheduled"
+        };
+      }
+      
+      // Add a notification to the project about the acceptance
+      const updatedProject = {
+        ...project,
+        projectNotifications: [
+          {
+            id: `notification-${Date.now()}`,
+            content: `${message.consultantName} has accepted the meeting invitation`,
+            timestamp: new Date().toISOString(),
+            type: "milestone" as NotificationType
+          },
+          ...project.projectNotifications
+        ]
+      };
+      
+      // Mark the message as read
+      const updatedMessages = state.messages.map(m => 
+        m.id === messageId ? { ...m, read: true } : m
+      );
+      
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          [message.projectId]: updatedProject
+        },
+        consultants: updatedConsultants,
+        messages: updatedMessages
+      };
+    }),
+    
+  declineMeetingInvitation: (messageId: string) =>
+    set((state: ProjectsState) => {
+      const message = state.messages.find(m => m.id === messageId);
+      if (!message || message.type !== "meeting_invitation") return state;
+      
+      const project = state.projects[message.projectId];
+      if (!project) return state;
+      
+      const updatedConsultants = { ...state.consultants };
+      if (message.consultantId && updatedConsultants[message.consultantId]) {
+        updatedConsultants[message.consultantId] = {
+          ...updatedConsultants[message.consultantId],
+          status: "available",
+          interviewStatus: "pending"
+        };
+      }
+      
+      // Add a notification to the project about the declination
+      const updatedProject = {
+        ...project,
+        projectNotifications: [
+          {
+            id: `notification-${Date.now()}`,
+            content: `${message.consultantName} has declined the meeting invitation`,
+            timestamp: new Date().toISOString(),
+            type: "alert" as NotificationType
+          },
+          ...project.projectNotifications
+        ]
+      };
+      
+      // Mark the message as read
+      const updatedMessages = state.messages.map(m => 
+        m.id === messageId ? { ...m, read: true } : m
+      );
+      
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          [message.projectId]: updatedProject
+        },
+        consultants: updatedConsultants,
+        messages: updatedMessages
       };
     })
 });

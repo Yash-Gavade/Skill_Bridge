@@ -1,19 +1,18 @@
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("admin");
@@ -31,7 +30,7 @@ export default function Login() {
     setTimeout(() => {
       if (username === "admin" && password === "0000") {
         login({ username });
-        navigate("/");
+        navigate("/dashboard");
       } else {
         toast({
           variant: "destructive",
@@ -47,7 +46,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">SkillBridge HQ</h1>
+          <h1 className="text-3xl font-bold">Skill Bridge</h1>
           <p className="text-gray-500 mt-2">Sign in to access your account</p>
         </div>
 
@@ -97,8 +96,8 @@ export default function Login() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Don't have an account?{" "}
-          <Button variant="link" className="h-auto p-0">
-            Contact your administrator
+          <Button variant="link" className="h-auto p-0" onClick={() => navigate("/signup")}>
+            Sign up
           </Button>
         </p>
       </div>

@@ -1,12 +1,9 @@
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ConsultantCard } from "@/components/consultants/ConsultantCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, Grid2X2, List } from "lucide-react";
 import { AddConsultantModal } from "@/components/modals/AddConsultantModal";
-import { useNavigate } from "react-router-dom";
+import { AssignToProjectModal } from "@/components/modals/AssignToProjectModal";
+import { ConsultantStatusReportModal } from "@/components/modals/ConsultantStatusReportModal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { 
+import { Input } from "@/components/ui/input";
+import {
   Table,
   TableBody,
   TableCell,
@@ -24,13 +21,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useProjectsStore, Consultant, ConsultantStatus } from "@/store/projectsStore";
+import { Consultant, ConsultantStatus, useProjectsStore } from "@/store/projectsStore";
+import { BarChart, Grid2X2, List, Plus, Search } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Consultants() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<ConsultantStatus | null>(null);
+  const [selectedConsultantForAssign, setSelectedConsultantForAssign] = useState<{id: string, name: string} | null>(null);
+  const [statusReportOpen, setStatusReportOpen] = useState(false);
   const navigate = useNavigate();
 
   const { consultants } = useProjectsStore();
@@ -82,10 +84,20 @@ export default function Consultants() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Consultants</h1>
-        <Button className="gap-2" onClick={() => setAddModalOpen(true)}>
-          <Plus size={16} />
-          Add Consultant
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            onClick={() => setStatusReportOpen(true)}
+          >
+            <BarChart size={16} />
+            Monthly Status Report
+          </Button>
+          <Button className="gap-2" onClick={() => setAddModalOpen(true)}>
+            <Plus size={16} />
+            Add Consultant
+          </Button>
+        </div>
       </div>
       
       <div className="flex flex-col sm:flex-row gap-4 justify-between">
@@ -225,6 +237,13 @@ export default function Consultants() {
                       variant="ghost" 
                       size="sm"
                       disabled={consultant.status !== "available"}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedConsultantForAssign({
+                          id: consultant.id,
+                          name: consultant.name
+                        });
+                      }}
                     >
                       Assign
                     </Button>
@@ -245,6 +264,22 @@ export default function Consultants() {
       <AddConsultantModal 
         open={addModalOpen} 
         onOpenChange={setAddModalOpen} 
+      />
+      
+      {selectedConsultantForAssign && (
+        <AssignToProjectModal
+          open={!!selectedConsultantForAssign}
+          onOpenChange={(open) => {
+            if (!open) setSelectedConsultantForAssign(null);
+          }}
+          consultantId={selectedConsultantForAssign.id}
+          consultantName={selectedConsultantForAssign.name}
+        />
+      )}
+      
+      <ConsultantStatusReportModal 
+        open={statusReportOpen}
+        onOpenChange={setStatusReportOpen}
       />
     </div>
   );

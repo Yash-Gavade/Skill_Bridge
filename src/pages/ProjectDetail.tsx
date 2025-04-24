@@ -1,25 +1,26 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { ConsultantCard } from "@/components/consultants/ConsultantCard";
+import { LeaveNoteModal } from "@/components/modals/LeaveNoteModal";
+import { ProjectAssignedConsultants } from "@/components/projects/ProjectAssignedConsultants";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { FileText, Calendar, Star, Clock, MessageSquare, Check, Pause, Upload, CheckCircle2 } from "lucide-react";
-import { ProjectAssignedConsultants } from "@/components/projects/ProjectAssignedConsultants";
-import { ConsultantCard } from "@/components/consultants/ConsultantCard";
+import { ProjectPhase, useProjectsStore } from "@/store/projectsStore";
+import { Check, CheckCircle2, Clock, FileText, Mail, MessageSquare, Pause, Star, Upload } from "lucide-react";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
-import { useProjectsStore, ProjectPhase } from "@/store/projectsStore";
 
 export default function ProjectDetail() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const [activeNotificationFilter, setActiveNotificationFilter] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState("overview");
+  const [leaveNoteModalOpen, setLeaveNoteModalOpen] = useState(false);
+  const [invitationsSent, setInvitationsSent] = useState(false);
   
-  const { projects, advanceProjectPhase, toggleConsultantSelection } = useProjectsStore();
+  const { projects, advanceProjectPhase, toggleConsultantSelection, sendMeetingInvitations } = useProjectsStore();
   
   const project = projectId ? projects[projectId] : null;
 
@@ -124,6 +125,75 @@ export default function ProjectDetail() {
     ? safeProject.projectNotifications.filter(notification => notification.type === activeNotificationFilter)
     : safeProject.projectNotifications;
 
+  const getPhaseTimelines = () => {
+    const phaseTimelines = {
+      "unassigned": "Not started yet",
+      "internal_interviews": project.projectNotifications.find(
+        n => n.content.includes("internal interviews")
+      )?.timestamp ? new Date(
+        project.projectNotifications.find(
+          n => n.content.includes("internal interviews")
+        )?.timestamp || ""
+      ).toLocaleDateString() : "Not started yet",
+      "profile_delivery": project.projectNotifications.find(
+        n => n.content.includes("Profile delivery")
+      )?.timestamp ? new Date(
+        project.projectNotifications.find(
+          n => n.content.includes("Profile delivery")
+        )?.timestamp || ""
+      ).toLocaleDateString() : "Not started yet",
+      "client_interviews": project.projectNotifications.find(
+        n => n.content.includes("Client interviews")
+      )?.timestamp ? new Date(
+        project.projectNotifications.find(
+          n => n.content.includes("Client interviews")
+        )?.timestamp || ""
+      ).toLocaleDateString() : "Not started yet",
+      "in_progress": project.projectNotifications.find(
+        n => n.content.includes("Project execution")
+      )?.timestamp ? new Date(
+        project.projectNotifications.find(
+          n => n.content.includes("Project execution")
+        )?.timestamp || ""
+      ).toLocaleDateString() : "Not started yet",
+      "completed": project.projectNotifications.find(
+        n => n.content.includes("Project completed")
+      )?.timestamp ? new Date(
+        project.projectNotifications.find(
+          n => n.content.includes("Project completed")
+        )?.timestamp || ""
+      ).toLocaleDateString() : "Not started yet"
+    };
+    
+    return phaseTimelines;
+  };
+
+  const handleSendInvitations = () => {
+    if (!projectId) return;
+    
+    const selectedConsultants = project.matchedConsultants.filter(c => c.selected);
+    
+    if (selectedConsultants.length === 0) {
+      toast.error("Please select at least one consultant to send invitations");
+      return;
+    }
+    
+    const consultantIds = selectedConsultants.map(c => c.id);
+    sendMeetingInvitations(projectId, consultantIds);
+    setInvitationsSent(true);
+    
+    // Show a more detailed toast notification
+    toast.success(`Invitations sent successfully`, {
+      description: (
+        <div className="text-sm">
+          <p>Sent to: {selectedConsultants.map(c => c.name).join(", ")}</p>
+          <p className="mt-1">Consultants will be notified to confirm their availability.</p>
+        </div>
+      ),
+      duration: 5000
+    });
+  };
+
   const renderPhaseContent = () => {
     switch (project.workflowPhase) {
       case "unassigned":
@@ -188,10 +258,19 @@ export default function ProjectDetail() {
                 </div>
                 
                 <div className="mt-6 flex justify-between">
-                  <div>
-                    <span className="text-sm font-medium">
+                  <div className="flex gap-2">
+                    <span className="text-sm font-medium self-center">
                       {project.matchedConsultants.filter(c => c.selected).length} consultants selected
                     </span>
+                    <Button 
+                      variant="outline"
+                      className="gap-2"
+                      onClick={handleSendInvitations}
+                      disabled={invitationsSent || project.matchedConsultants.filter(c => c.selected).length === 0}
+                    >
+                      <Mail size={16} />
+                      {invitationsSent ? "Invitations Sent" : "Invite to Meeting"}
+                    </Button>
                   </div>
                   <Button onClick={handleAdvanceToProfileDelivery}>
                     Proceed to Profile Delivery
@@ -598,51 +677,35 @@ export default function ProjectDetail() {
           <Progress value={getPhaseProgress()} className="h-2" />
           <div className="flex items-center justify-between mt-2">
             <div className="flex flex-1 items-center justify-between">
-              <div className={`flex flex-col items-center`}>
-                <div className={`w-3 h-3 rounded-full ${
-                  project.workflowPhase !== "unassigned" ? 'bg-primary' : 'bg-gray-200'
-                }`} />
-                <span className="text-xs mt-1 text-gray-600">Selection</span>
-              </div>
-              
-              <div className={`flex flex-col items-center`}>
-                <div className={`w-3 h-3 rounded-full ${
-                  ["internal_interviews", "profile_delivery", "client_interviews", "in_progress", "completed"].includes(project.workflowPhase) 
-                    ? 'bg-primary' : 'bg-gray-200'
-                }`} />
-                <span className="text-xs mt-1 text-gray-600">Internal Interviews</span>
-              </div>
-              
-              <div className={`flex flex-col items-center`}>
-                <div className={`w-3 h-3 rounded-full ${
-                  ["profile_delivery", "client_interviews", "in_progress", "completed"].includes(project.workflowPhase) 
-                    ? 'bg-primary' : 'bg-gray-200'
-                }`} />
-                <span className="text-xs mt-1 text-gray-600">Profile Delivery</span>
-              </div>
-              
-              <div className={`flex flex-col items-center`}>
-                <div className={`w-3 h-3 rounded-full ${
-                  ["client_interviews", "in_progress", "completed"].includes(project.workflowPhase) 
-                    ? 'bg-primary' : 'bg-gray-200'
-                }`} />
-                <span className="text-xs mt-1 text-gray-600">Client Interviews</span>
-              </div>
-              
-              <div className={`flex flex-col items-center`}>
-                <div className={`w-3 h-3 rounded-full ${
-                  ["in_progress", "completed"].includes(project.workflowPhase) 
-                    ? 'bg-primary' : 'bg-gray-200'
-                }`} />
-                <span className="text-xs mt-1 text-gray-600">Execution</span>
-              </div>
-              
-              <div className={`flex flex-col items-center`}>
-                <div className={`w-3 h-3 rounded-full ${
-                  project.workflowPhase === "completed" ? 'bg-primary' : 'bg-gray-200'
-                }`} />
-                <span className="text-xs mt-1 text-gray-600">Completed</span>
-              </div>
+              {["unassigned", "internal_interviews", "profile_delivery", "client_interviews", "in_progress", "completed"].map((phase, index) => {
+                const phaseKey = phase as ProjectPhase;
+                const isActive = 
+                  index === 0 ? true : 
+                  ["internal_interviews", "profile_delivery", "client_interviews", "in_progress", "completed"].includes(project.workflowPhase) && index === 1 ? true :
+                  ["profile_delivery", "client_interviews", "in_progress", "completed"].includes(project.workflowPhase) && index === 2 ? true :
+                  ["client_interviews", "in_progress", "completed"].includes(project.workflowPhase) && index === 3 ? true :
+                  ["in_progress", "completed"].includes(project.workflowPhase) && index === 4 ? true :
+                  project.workflowPhase === "completed" && index === 5;
+                
+                const phaseLabels = {
+                  "unassigned": "Selection",
+                  "internal_interviews": "Internal Interviews",
+                  "profile_delivery": "Profile Delivery",
+                  "client_interviews": "Client Interviews",
+                  "in_progress": "Execution",
+                  "completed": "Completed"
+                };
+                
+                const phaseTimelines = getPhaseTimelines();
+                
+                return (
+                  <div key={phase} className={`flex flex-col items-center`}>
+                    <div className={`w-3 h-3 rounded-full ${isActive ? 'bg-primary' : 'bg-gray-200'}`} />
+                    <span className="text-xs mt-1 text-gray-600">{phaseLabels[phaseKey]}</span>
+                    <span className="text-[10px] mt-0.5 text-gray-500">{phaseTimelines[phaseKey]}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -741,7 +804,12 @@ export default function ProjectDetail() {
                 <div className="mt-6">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-md font-medium">Team Feedback</h3>
-                    <Button variant="outline" size="sm" className="text-xs gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-xs gap-2"
+                      onClick={() => setLeaveNoteModalOpen(true)}
+                    >
                       <MessageSquare className="h-3 w-3" />
                       Leave Note
                     </Button>
@@ -834,6 +902,12 @@ export default function ProjectDetail() {
           </div>
         </div>
       )}
+
+      <LeaveNoteModal
+        open={leaveNoteModalOpen}
+        onOpenChange={setLeaveNoteModalOpen}
+        projectId={projectId || ""}
+      />
     </div>
   );
 }

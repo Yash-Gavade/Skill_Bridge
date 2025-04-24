@@ -1,7 +1,7 @@
-
-import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Users, Calendar } from "lucide-react";
+import { MessagesPanel } from "@/components/dashboard/MessagesPanel";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
+import { Card, CardContent } from "@/components/ui/card";
+import { Calendar, FileText, Users } from "lucide-react";
 
 const stats = [
   { 
@@ -59,8 +59,13 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="mt-8">
-        <NotificationsPanel />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <NotificationsPanel />
+        </div>
+        <div>
+          <MessagesPanel />
+        </div>
       </div>
     </div>
   );

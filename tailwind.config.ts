@@ -27,30 +27,30 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
-					50: "#eff6ff",
-					100: "#dbeafe",
-					200: "#bfdbfe",
-					300: "#93c5fd",
-					400: "#60a5fa",
-					500: "#3b82f6",
-					600: "#2563eb",
-					700: "#1d4ed8",
-					800: "#1e40af",
-					900: "#1e3a8a"
+					50: "#f5f3ff",
+					100: "#ede9fe",
+					200: "#ddd6fe",
+					300: "#c4b5fd",
+					400: "#a78bfa",
+					500: "#8b5cf6",
+					600: "#7c3aed",
+					700: "#6d28d9",
+					800: "#5b21b6",
+					900: "#4c1d95"
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))',
-					50: "#f0f9ff",
-					100: "#e0f2fe",
-					200: "#bae6fd",
-					300: "#7dd3fc",
-					400: "#38bdf8",
-					500: "#0ea5e9",
-					600: "#0284c7",
-					700: "#0369a1",
-					800: "#075985",
-					900: "#0c4a6e"
+					50: "#faf5ff",
+					100: "#f3e8ff",
+					200: "#e9d5ff",
+					300: "#d8b4fe",
+					400: "#c084fc",
+					500: "#a855f7",
+					600: "#9333ea",
+					700: "#7e22ce",
+					800: "#6b21a8",
+					900: "#581c87"
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -63,16 +63,16 @@ export default {
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))',
-					50: "#ecfdf5",
-					100: "#d1fae5",
-					200: "#a7f3d0",
-					300: "#6ee7b7",
-					400: "#34d399",
-					500: "#10b981",
-					600: "#0d9488",
-					700: "#047857",
-					800: "#065f46",
-					900: "#064e3b"
+					50: "#f5f3ff",
+					100: "#ede9fe",
+					200: "#ddd6fe",
+					300: "#c4b5fd",
+					400: "#a78bfa",
+					500: "#8b5cf6",
+					600: "#7c3aed",
+					700: "#6d28d9",
+					800: "#5b21b6",
+					900: "#4c1d95"
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -119,6 +119,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'purple-gradient': 'linear-gradient(to right, #6e33f5, #aa44ff)'
 			}
 		}
 	},

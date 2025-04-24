@@ -1,27 +1,32 @@
-
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { 
-  Grid2X2, 
-  FileText, 
-  Users, 
-  Settings, 
-  ChevronLeft,
-  ChevronRight
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import {
+    ChevronLeft,
+    ChevronRight,
+    FileText,
+    Grid2X2,
+    History,
+    Settings,
+    Users
+} from "lucide-react";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
   {
     label: "Dashboard",
     icon: Grid2X2,
-    href: "/",
+    href: "/dashboard",
   },
   {
     label: "Projects",
     icon: FileText,
     href: "/projects",
+  },
+  {
+    label: "Past Projects",
+    icon: History,
+    href: "/past-projects",
   },
   {
     label: "Employees",
@@ -67,7 +72,10 @@ export function Sidebar() {
             {navItems.map((item) => (
               <li key={item.label}>
                 <button
-                  onClick={() => navigate(item.href)}
+                  onClick={() => {
+                    console.log("Navigating to:", item.href);
+                    navigate(item.href);
+                  }}
                   className={cn(
                     "flex items-center gap-x-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors",
                     location.pathname === item.href

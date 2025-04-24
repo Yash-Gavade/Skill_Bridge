@@ -1,0 +1,206 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  background-color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.logo {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 4rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navLinks a {
+  font-size: 1.2rem;
+  color: #000;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navLinks a:hover {
+  color: #555;
+}
+
+.navButtons button {
+  font-size: 1rem;
+  margin-left: 1rem;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.signupBtn {
+  background-color: #ddd;
+  color: #000;
+}
+
+.loginBtn {
+  background: linear-gradient(to right, #6e33f5, #aa44ff);
+  color: #fff;
+}
+
+/* About Section */
+.aboutSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5rem 2rem;
+  background-color: #fff;
+}
+
+.aboutText {
+  width: 50%;
+}
+
+.aboutText h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #3f2a79;
+  margin-bottom: 1rem;
+}
+
+.aboutText p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.aboutImage {
+  width: 40%;
+}
+
+.aboutImage img {
+  width: 100%;
+  height: auto;
+}
+
+.ctaButton {
+  background-color: #8a3ffc;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.ctaButton:hover {
+  background-color: #6f2dc8;
+}
+
+/* Modal Styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  z-index: 1001;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #3f2a79;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal input {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.modal button {
+  background-color: #8a3ffc;
+  color: white;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.modal p {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.modal a {
+  color: #8a3ffc;
+  text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .aboutSection {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .aboutText, .aboutImage {
+    width: 100%;
+  }
+
+  .ctaButton {
+    padding: 0.8rem 1.8rem;
+    font-size: 1rem;
+  }
+
+  .navLinks {
+    gap: 2rem;
+  }
+  
+  .navButtons button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+} 
