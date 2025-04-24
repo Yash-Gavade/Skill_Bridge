@@ -35,7 +35,7 @@ function HowItWorks() {
   return (
     <div className={styles.container}>
       <nav className={styles.navbar}>
-        <div className={styles.logo}>Skill Bridge</div>
+        <div className={styles.logo} style={{ color: '#6B46C1' }}>Skill Bridge</div>
         <ul className={styles.navLinks}>
           <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>Home</a></li>
           <li><a href="/about" onClick={(e) => { e.preventDefault(); navigate("/about"); }}>About Us</a></li>
@@ -47,7 +47,7 @@ function HowItWorks() {
         </div>
       </nav>
 
-      <div className={styles.aboutSection}>
+      <section className={styles.aboutSection}>
         <div className={styles.aboutText}>
           <h1>How It Works</h1>
           <p>
@@ -89,7 +89,7 @@ function HowItWorks() {
             </p>
           </section>
         </div>
-      </div>
+      </section>
 
       {/* Modals */}
       {(showLoginModal || showSignupModal) && (

@@ -52,11 +52,11 @@ export function ConsultantCard({ consultant, selectable, onSelect }: ConsultantC
         selectable && "cursor-pointer",
         consultant.selected && selectable && "ring-2 ring-primary"
       )}>
-        {formattedScore && (
+{/* {formattedScore && (
           <div className="absolute top-2 right-2 z-10 bg-amber-100 text-amber-800 rounded-full px-2.5 py-1 text-xs font-semibold">
             Score: {formattedScore}
           </div>
-        )}
+        )} */}
         
         <CardHeader className="pt-6 px-6">
           <div className="flex items-start gap-4">

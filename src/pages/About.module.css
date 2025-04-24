@@ -67,18 +67,30 @@
 /* About Section */
 .aboutSection {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 5rem 2rem;
+  justify-content: center;
+  padding: 3rem 2rem;
   background-color: #fff;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .aboutText {
-  width: 50%;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.aboutText h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #3f2a79;
+  margin-bottom: 1.5rem;
 }
 
 .aboutText h2 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 600;
   color: #3f2a79;
   margin-bottom: 1rem;
@@ -88,6 +100,16 @@
   font-size: 1.1rem;
   line-height: 1.8;
   margin-bottom: 1.5rem;
+}
+
+.featureSection {
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+}
+
+.featureSection h2 {
+  color: #6B46C1;
+  margin-bottom: 1rem;
 }
 
 .aboutImage {

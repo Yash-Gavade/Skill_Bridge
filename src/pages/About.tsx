@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import robotImage from '../images/robot-image.png';
 import styles from './About.module.css';
 
 function About() {
@@ -41,7 +40,7 @@ function About() {
   return (
     <div className={styles.container}>
       <nav className={styles.navbar}>
-        <div className={styles.logo}>Skill Bridge</div>
+        <div className={styles.logo} style={{ color: '#6B46C1' }}>Skill Bridge</div>
         <ul className={styles.navLinks}>
           <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>Home</a></li>
           <li><a href="/how-it-works" onClick={(e) => { e.preventDefault(); navigate("/how-it-works"); }}>How It Works</a></li>
@@ -71,10 +70,6 @@ function About() {
           <button className={styles.ctaButton} onClick={handleLearnMore}>
             Learn More
           </button>
-        </div>
-
-        <div className={styles.aboutImage}>
-          <img src={robotImage} alt="AI Robot" />
         </div>
       </section>
 
