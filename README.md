@@ -139,6 +139,15 @@ docker build -t skill-bridge .
 # Run the container
 docker run -p 8080:80 skill-bridge
 
+# Command Reference
+For detailed command instructions and implementation guidelines, refer to the command_list.txt file included in the repository.
+
+This file outlines important operational commands, development scripts, and configuration notes used throughout the Skill Bridge project. It serves as a quick reference for contributors and maintainers.
+
+🔧 Note: All relevant changes from command_list.txt have been integrated into the application logic and documentation where applicable.
+
+
+
 
 ## Roadmap
 
