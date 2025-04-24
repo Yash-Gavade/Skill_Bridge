@@ -126,3 +126,43 @@ npm run build
 
 
 The built files will be in the dist directory.
+
+### Deployment Options
+
+#### Static Hosting
+Upload the contents of the dist directory to any static hosting service like:
+- Netlify
+- Vercel
+- GitHub Pages
+- AWS S3
+
+#### Docker Deployment
+A Dockerfile is provided for containerized deployment:
+
+bash
+# Build the Docker image
+docker build -t skill-bridge .
+
+# Run the container
+docker run -p 8080:80 skill-bridge
+
+
+## Roadmap
+
+- *AI Enhancement*: Advanced machine learning for more precise consultant-project matching
+- *Mobile Application*: Native mobile apps for iOS and Android
+- *Analytics Dashboard*: Enhanced reporting and analytics features
+- *Integration Ecosystem*: APIs for integration with external HRMS and project management tools
+- *Multilingual Support*: Support for additional languages
+
+## Contributing
+
+We welcome contributions to Skill Bridge! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit pull requests, report issues, and suggest improvements.
+
+## License
+
+Skill Bridge is released under the [MIT License](LICENSE).
+
+## Support
+
+For support, please reach out to support@skillbridge.com or open an issue on GitHub.
