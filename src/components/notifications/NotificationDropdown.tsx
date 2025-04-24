@@ -88,7 +88,8 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
       );
       setMarkingAsRead(prev => prev.filter(id => id !== notificationId));
       toast.success("Marked as read", {
-        description: "Notification has been marked as read."
+        description: "Notification has been marked as read.",
+        duration: 1000
       });
     }, 600);
   };

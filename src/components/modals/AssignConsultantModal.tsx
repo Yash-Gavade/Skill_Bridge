@@ -1,21 +1,20 @@
-
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { ConsultantCard } from "@/components/consultants/ConsultantCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { ConsultantCard } from "@/components/consultants/ConsultantCard";
-import { CirclePlus, CheckCircle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Consultant, Project, useProjectsStore } from "@/store/projectsStore";
+import { CheckCircle, CirclePlus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useProjectsStore, Consultant, Project } from "@/store/projectsStore";
 
 interface AssignConsultantModalProps {
   open: boolean;
@@ -88,7 +87,8 @@ export function AssignConsultantModal({
     assignConsultantsToProject(project.id, selectedConsultants);
     
     toast.success("Project submitted for internal interviews", {
-      description: `${selectedConsultants.length} consultants selected for interviews`
+      description: `${selectedConsultants.length} consultants selected for interviews`,
+      duration: 1000,
     });
     
     onOpenChange(false);

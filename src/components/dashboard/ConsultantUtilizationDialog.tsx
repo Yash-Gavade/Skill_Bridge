@@ -2,11 +2,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -251,7 +251,9 @@ export function ConsultantUtilizationDialog({ open, onOpenChange }: ConsultantUt
                     <Progress 
                       value={consultant.utilization} 
                       className="h-2" 
-                      indicatorClassName={getUtilizationColor(consultant.utilization)}
+                      style={{ 
+                        "--progress-background": getUtilizationColor(consultant.utilization) 
+                      } as React.CSSProperties}
                     />
                   </div>
                 </div>

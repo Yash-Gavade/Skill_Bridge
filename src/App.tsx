@@ -10,13 +10,14 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import About from "./pages/About";
 import ConsultantProfile from "./pages/ConsultantProfile";
-import ConsultantView from "./pages/ConsultantView";
 import Consultants from "./pages/Consultants";
+import ConsultantView from "./pages/ConsultantView";
 import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import HowItWorks from "./pages/HowItWorks";
 import Login from "./pages/Login";
+import MisconductReportView from "./pages/MisconductReportView";
 import NotFound from "./pages/NotFound";
 import PastProjectDetail from "./pages/PastProjectDetail";
 import PastProjects from "./pages/PastProjects";
@@ -101,6 +102,10 @@ const AppRoutes = () => {
       <Route 
         path="/upload-cv" 
         element={<ProtectedRoute><Layout><UploadCV /></Layout></ProtectedRoute>} 
+      />
+      <Route 
+        path="/misconduct-reports/:reportId" 
+        element={<ProtectedRoute><Layout><MisconductReportView /></Layout></ProtectedRoute>} 
       />
       
       {/* Not found */}

@@ -1,15 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ConsultantCard } from "@/components/consultants/ConsultantCard";
+import { ProjectCard } from "@/components/projects/ProjectCard";
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card";
+import { ArrowRight, Calendar, FileText, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Users, FileText } from "lucide-react";
 
 // Mock data
 const upcomingProjects = [
@@ -90,7 +90,7 @@ export default function Index() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold mb-1">Welcome to SkillBridge HQ</h1>
+        <h1 className="text-3xl font-bold mb-1">Welcome to Skill Bridge</h1>
         <p className="text-gray-500">AI-powered consultant management platform</p>
       </div>
       

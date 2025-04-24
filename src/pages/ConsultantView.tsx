@@ -217,7 +217,7 @@ export default function ConsultantView() {
       setFeedbackProject("");
       setFeedbackCategory("general");
       
-      toast.success("Feedback submitted successfully");
+      toast.success("Feedback submitted successfully", { duration: 1000 });
     }
   };
   
@@ -251,7 +251,7 @@ export default function ConsultantView() {
       setCompleteConsultant(updatedConsultant);
       setNewAvatarUrl("");
       
-      toast.success("Profile photo updated successfully");
+      toast.success("Profile photo updated successfully", { duration: 1000 });
     }
   };
 
@@ -267,7 +267,7 @@ export default function ConsultantView() {
       };
       
       setCompleteConsultant(updatedConsultant);
-      toast.success("Profile photo updated successfully");
+      toast.success("Profile photo updated successfully", { duration: 1000 });
     }
   };
   

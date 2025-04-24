@@ -83,7 +83,7 @@ export function AssignToProjectModal({
         : project.workflowPhase,
     });
     
-    toast.success(`${consultantName} has been assigned to the project`);
+    toast.success(`${consultantName} has been assigned to the project`, { duration: 1000 });
     onOpenChange(false);
   };
   

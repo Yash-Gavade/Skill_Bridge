@@ -41,7 +41,7 @@ export function MessagesPanel() {
   
   const handleMarkAllRead = () => {
     markAllMessagesAsRead();
-    toast.success("All messages marked as read");
+    toast.success("All messages marked as read", { duration: 1000 });
   };
   
   // Group messages by project

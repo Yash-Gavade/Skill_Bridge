@@ -51,25 +51,25 @@ export default function Settings() {
   const [loginAlerts, setLoginAlerts] = useState(true);
   
   const handleSaveProfile = () => {
-    toast.success("Profile settings saved successfully");
+    toast.success("Profile settings saved successfully", { duration: 1000 });
   };
   
   const handleSaveNotifications = () => {
-    toast.success("Notification preferences updated");
+    toast.success("Notification preferences updated", { duration: 1000 });
   };
   
   const handleSaveAppearance = () => {
-    toast.success("Appearance settings updated");
+    toast.success("Appearance settings updated", { duration: 1000 });
   };
   
   const handleSaveSecurity = () => {
-    toast.success("Security settings updated");
+    toast.success("Security settings updated", { duration: 1000 });
   };
   
   // Apply theme change immediately
   const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
     setTheme(newTheme);
-    toast.success(`Theme changed to ${newTheme}`);
+    toast.success(`Theme changed to ${newTheme}`, { duration: 1000 });
   };
   
   return (

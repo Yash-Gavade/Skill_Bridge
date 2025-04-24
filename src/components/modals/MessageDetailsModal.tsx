@@ -67,14 +67,16 @@ export function MessageDetailsModal({ open, onOpenChange, message }: MessageDeta
       // Show appropriate toast based on response type
       if (responseType === "accept") {
         toast.success("Meeting invitation accepted", {
-          description: "The consultant has been notified of your acceptance."
+          description: `You have accepted the meeting for ${message.projectName}`,
+          duration: 1000,
         });
       } else if (responseType === "decline") {
         toast.info("Meeting invitation declined", {
-          description: "Please consider rescheduling at a better time."
+          description: "Please consider rescheduling at a better time.",
+          duration: 1000,
         });
       } else {
-        toast.success("Response sent successfully");
+        toast.success("Response sent successfully", { duration: 1000 });
       }
       
       setIsSubmitting(false);

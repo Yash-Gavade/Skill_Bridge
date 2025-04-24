@@ -47,7 +47,8 @@ export function MessageDropdown({ onClose }: MessageDropdownProps) {
       acceptMeetingInvitation(messageId);
       setAcceptingIds(prev => prev.filter(id => id !== messageId));
       toast.success("Invitation accepted", {
-        description: "You've accepted the meeting invitation."
+        description: "The meeting has been added to your calendar",
+        duration: 1000,
       });
     }, 800);
   };

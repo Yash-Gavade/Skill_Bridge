@@ -96,16 +96,27 @@ export function NotificationsPanel() {
             setProjectMessagesOpen(false);
             navigate(`/projects/${notification.projectId}`);
           }
-        }
+        },
+        duration: 1000,
       });
-    } else {
+    } 
+    // Handle employee misconduct notifications differently
+    else if (notification.subject === "Employee misconduct reported") {
+      // Navigate to the misconduct report page instead of the project page
+      navigate(`/misconduct-reports/MC-2023-0042`);
+      
+      // Mark as read in our local state
+      setReadNotifications(prev => [...prev, notification.id]);
+    }
+    else {
       // For other notifications, show a more detailed toast with action
       toast.info(`Viewing: ${notification.subject}`, {
         description: notification.preview,
         action: {
           label: "View Details",
           onClick: () => navigate(`/projects/${notification.projectId}`)
-        }
+        },
+        duration: 1000,
       });
       
       // Navigate to the relevant project
@@ -120,7 +131,7 @@ export function NotificationsPanel() {
     // Mark all as read in our local state
     const allIds = allNotifications.map(n => n.id);
     setReadNotifications(allIds);
-    toast.success("All notifications marked as read");
+    toast.success("All notifications marked as read", { duration: 1000 });
   };
 
   const isRead = (id: string) => readNotifications.includes(id);

@@ -77,12 +77,12 @@ export default function ProjectDetail() {
     }
     
     advanceProjectPhase(project.id, "profile_delivery");
-    toast.success("Project advanced to Profiles Delivered / Awaiting Interviews phase");
+    toast.success("Project advanced to Profiles Delivered / Awaiting Interviews phase", { duration: 1000 });
   };
 
   const handleStartClientInterviews = () => {
     advanceProjectPhase(project.id, "client_interviews");
-    toast.success("Client interviews initiated");
+    toast.success("Client interviews initiated", { duration: 1000 });
   };
 
   const handleStartProject = () => {
@@ -94,12 +94,12 @@ export default function ProjectDetail() {
     }
     
     advanceProjectPhase(project.id, "in_progress", "planning");
-    toast.success("Project started successfully");
+    toast.success("Project started successfully", { duration: 1000 });
   };
 
   const handleCompleteProject = () => {
     advanceProjectPhase(project.id, "completed");
-    toast.success("Project marked as complete");
+    toast.success("Project marked as complete", { duration: 1000 });
   };
 
   const getPhaseProgress = () => {
@@ -187,10 +187,10 @@ export default function ProjectDetail() {
       description: (
         <div className="text-sm">
           <p>Sent to: {selectedConsultants.map(c => c.name).join(", ")}</p>
-          <p className="mt-1">Consultants will be notified to confirm their availability.</p>
+          <p className="mt-1">Consultants will be notified to schedule interviews</p>
         </div>
       ),
-      duration: 5000
+      duration: 1000
     });
   };
 

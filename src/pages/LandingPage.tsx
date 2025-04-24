@@ -8,7 +8,7 @@ export default function LandingPage() {
       <header className="bg-gradient-to-r from-primary-600 to-primary-800 text-white">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <nav className="flex justify-between items-center mb-16">
-            <div className="text-2xl font-bold">SkillBridge</div>
+            <div className="text-2xl font-bold">Skill Bridge</div>
             <div className="space-x-4">
               <Link to="/login" className="text-white hover:text-primary-200">Login</Link>
             </div>
@@ -17,7 +17,7 @@ export default function LandingPage() {
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">Connect Skills with Opportunities</h1>
             <p className="text-xl md:text-2xl mb-8">
-              SkillBridge is the AI-powered platform that connects skilled consultants 
+              Skill Bridge is the AI-powered platform that connects skilled consultants 
               with the right projects, maximizing talent utilization and project success.
             </p>
             <Link to="/dashboard">
@@ -32,7 +32,7 @@ export default function LandingPage() {
       {/* Features Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">How SkillBridge Works</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">How Skill Bridge Works</h2>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -63,13 +63,13 @@ export default function LandingPage() {
           
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <p className="text-gray-600 mb-4">"SkillBridge transformed how we find specialized talent for our projects. The matching algorithm is impressively accurate."</p>
+              <p className="text-gray-600 mb-4">"Skill Bridge transformed how we find specialized talent for our projects. The matching algorithm is impressively accurate."</p>
               <div className="font-semibold">Sarah Johnson</div>
               <div className="text-sm text-gray-500">CTO, TechInnovate</div>
             </div>
             
             <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <p className="text-gray-600 mb-4">"As a consultant, SkillBridge has connected me with projects that perfectly match my skills and interests."</p>
+              <p className="text-gray-600 mb-4">"As a consultant, Skill Bridge has connected me with projects that perfectly match my skills and interests."</p>
               <div className="font-semibold">Mark Williams</div>
               <div className="text-sm text-gray-500">Independent DevOps Consultant</div>
             </div>
@@ -81,7 +81,7 @@ export default function LandingPage() {
       <section className="py-16 bg-primary-900 text-white text-center">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-6">Ready to Find Your Perfect Match?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">Join SkillBridge today and experience the future of consultant-project matching.</p>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">Join Skill Bridge today and experience the future of consultant-project matching.</p>
           <Link to="/dashboard">
             <Button size="lg" variant="secondary" className="text-lg px-8">
               Get Started Now
@@ -95,7 +95,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">SkillBridge</h3>
+              <h3 className="text-xl font-bold mb-4">Skill Bridge</h3>
               <p>Connecting talent with opportunity through AI-powered matching.</p>
             </div>
             
@@ -126,7 +126,7 @@ export default function LandingPage() {
           </div>
           
           <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-            <p>&copy; {new Date().getFullYear()} SkillBridge. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Skill Bridge. All rights reserved.</p>
           </div>
         </div>
       </footer>

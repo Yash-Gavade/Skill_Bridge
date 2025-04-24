@@ -92,7 +92,7 @@ export function Sidebar() {
               className="font-semibold text-lg text-primary-600 cursor-pointer hover:text-primary-700 transition-colors"
               onClick={() => navigate("/")}
             >
-              SkillBridge
+              Skill Bridge
             </div>
           )}
           {collapsed && (
@@ -146,10 +146,8 @@ export function Sidebar() {
                     {getUserInitials()}
                   </div>
                   <div className="flex-1 overflow-hidden">
-                    <p className="text-sm font-medium truncate">SkillBridge HQ</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {user?.username || "Guest"}
-                    </p>
+                    <p className="text-sm font-medium truncate">Skill Bridge</p>
+                
                   </div>
                 </div>
               </DropdownMenuTrigger>
